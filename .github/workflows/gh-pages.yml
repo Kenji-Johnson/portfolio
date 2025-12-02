@@ -39,6 +39,63 @@ jobs:
           branch: gh-pages # The branch the action should deploy to.
           folder: .       # The folder the action should deploy.
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  diagnose:
+    name: Diagnostic: attempt manual push to gh-pages (debug)
+    runs-on: ubuntu-latest
+    needs: deploy
+    permissions:
+      contents: read
+      pages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Show repo info
+        run: |
+          echo "GITHUB_REPOSITORY=${GITHUB_REPOSITORY}"
+          echo "GITHUB_REF=${GITHUB_REF}"
+          echo "GITHUB_SHA=${GITHUB_SHA}"
+          git --version
+          git remote -v
+          git branch -a || true
+          git ls-remote --heads origin || true
+
+      - name: Configure git identity
+        run: |
+          git config user.email "github-actions@github.com"
+          git config user.name "github-actions"
+
+      - name: Attempt to push to gh-pages (diagnostic)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euxo pipefail
+          # Make a new orphan gh-pages branch (no history) so we can test a push
+          git switch --orphan gh-pages || git checkout --orphan gh-pages
+          # Remove files from index (not working tree)
+          git rm -rf . || true
+          # Copy repository files from the checked out workspace (excluding .git)
+          shopt -s extglob || true
+          cp -r -- * . || true
+          ls -la
+          git add -A || true
+          git commit -m "diagnostic: gh-pages push" || true
+          # Setup authenticated remote (do not echo URL; using token)
+          AUTH_URL=https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git
+          git remote set-url origin $AUTH_URL
+          # Show remote to confirm it's configured (without printing token)
+          git remote -v
+          # Attempt push and capture errors
+          if git push origin gh-pages --force; then
+            echo "Diagnostic push succeeded"
+          else
+            >&2 echo "Diagnostic push failed - continue to gather logs"
+            git push origin gh-pages --force || true
+          fi
 name: Deploy to GitHub Pages
 
 on:
