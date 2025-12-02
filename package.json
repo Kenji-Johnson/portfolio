@@ -1,0 +1,10 @@
+{
+  "name": "portfolio-hello-world",
+  "version": "1.0.0",
+  "description": "Simple static Hello World site for testing and portfolio use",
+  "scripts": {
+    "start": "python3 -m http.server 8000"
+  },
+  "author": "Kenji-Johnson",
+  "license": "MIT"
+}
