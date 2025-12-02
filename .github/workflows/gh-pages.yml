@@ -4,6 +4,47 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch: {}
+
+# Explicit permissions required for the deploy action to write Pages content
+permissions:
+  pages: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Show repo status (debug)
+        run: |
+          echo "GITHUB_REPOSITORY=${GITHUB_REPOSITORY}"
+          echo "GITHUB_REF=${GITHUB_REF}"
+          echo "GITHUB_SHA=${GITHUB_SHA}"
+          echo "--- Files at root ---"
+          ls -la
+          echo "--- Files at repo root ---"
+          ls -la .
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: .       # The folder the action should deploy.
+          token: ${{ secrets.GITHUB_TOKEN }}
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
