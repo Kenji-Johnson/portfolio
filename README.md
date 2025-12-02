@@ -41,3 +41,13 @@ Notes:
 - You can add more pages or assets under a `public/` or `site/` folder and point a simple server there.
 
 Enjoy! 👋
+
+
+Deployment (GitHub Pages)
+
+- This repository includes a GitHub Actions workflow that automatically deploys the root of `main` to the `gh-pages` branch on every push.
+- After a push to `main`, the site will be published to GitHub Pages at:
+
+  https://Kenji-Johnson.github.io/portfolio
+
+  If you don't see it immediately, wait a minute for the deployment action to finish and the site to be available. You can view workflow logs under the Actions tab in the repository, or check the `gh-pages` branch in the repo.
