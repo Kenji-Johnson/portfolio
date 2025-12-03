@@ -23,3 +23,40 @@ h1 {
 @media (min-width: 640px) {
   h1 { font-size: 2.25rem; }
 }
+
+/* Spinning gear background (decorative) */
+.gears {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+.container { position: relative; z-index: 1; }
+
+.gear {
+  position: absolute;
+  font-size: 2.5rem;
+  opacity: 0.16;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  animation: spin linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Positions + varied sizes/speeds */
+.gear:nth-child(1) { left: 8%;  top: 12%;  font-size: 3.2rem; animation-duration: 18s; }
+.gear:nth-child(2) { right: 6%; top: 20%;  font-size: 2.2rem; animation-duration: 14s; }
+.gear:nth-child(3) { left: 18%; bottom: 10%; font-size: 2.6rem; animation-duration: 22s; }
+.gear:nth-child(4) { right: 22%; bottom: 18%; font-size: 3.6rem; animation-duration: 26s; opacity: 0.12; }
+.gear:nth-child(5) { left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 4rem; animation-duration: 30s; opacity: 0.08; }
+.gear:nth-child(6) { left: 76%; top: 6%; font-size: 2rem; animation-duration: 12s; opacity: 0.14; }
+
+@media (max-width: 420px) {
+  .gear { font-size: 1.6rem; opacity: 0.12; }
+  .gear:nth-child(5) { display: none; }
+}
